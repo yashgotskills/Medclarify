@@ -1,18 +1,22 @@
 import React, { useState, useCallback } from 'react';
-import { Upload, FileText, Image, File, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Image, File, CheckCircle, AlertCircle, Camera, FolderOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface FileUploadProps {
-  onFileUpload: (file: File) => void;
+  onFileUpload: (file: File, fileUrl?: string) => void;
   className?: string;
+  userId?: string;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, className }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, className, userId }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const { toast } = useToast();
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -42,14 +46,77 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, className }) => {
   }, []);
 
   const handleFileUpload = async (file: File) => {
+    if (!userId) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to upload medical reports",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploadStatus('uploading');
     setUploadedFile(file);
-    
-    // Simulate upload delay
-    setTimeout(() => {
+
+    try {
+      // Upload file to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}/${Date.now()}.${fileExt}`;
+
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('medical-reports')
+        .upload(fileName, file);
+
+      if (storageError) throw storageError;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('medical-reports')
+        .getPublicUrl(fileName);
+
       setUploadStatus('success');
-      onFileUpload(file);
-    }, 1500);
+      onFileUpload(file, urlData.publicUrl);
+      
+      toast({
+        title: "Upload Successful",
+        description: "Your medical report has been uploaded successfully",
+      });
+    } catch (error: any) {
+      setUploadStatus('error');
+      toast({
+        title: "Upload Failed",
+        description: error.message || "Failed to upload file",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCameraCapture = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        handleFileUpload(files[0]);
+      }
+    };
+    input.click();
+  };
+
+  const handleGalleryAccess = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.png,.jpg,.jpeg,.txt,image/*,application/pdf';
+    input.multiple = false;
+    input.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        handleFileUpload(files[0]);
+      }
+    };
+    input.click();
   };
 
   const getFileIcon = (file: File) => {
@@ -135,9 +202,16 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, className }) => {
               <span className="px-3 py-1 bg-muted rounded-full">TXT</span>
             </div>
             
-            <Button variant="upload" size="lg" className="mt-6">
-              Choose File
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <Button variant="upload" size="lg" onClick={handleGalleryAccess}>
+                <FolderOpen className="w-4 h-4 mr-2" />
+                Choose File
+              </Button>
+              <Button variant="outline" size="lg" onClick={handleCameraCapture}>
+                <Camera className="w-4 h-4 mr-2" />
+                Take Photo
+              </Button>
+            </div>
           </div>
         )}
       </div>

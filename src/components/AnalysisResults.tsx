@@ -10,9 +10,10 @@ import HealthCharts from './HealthCharts';
 interface AnalysisResultsProps {
   fileName: string;
   analysisComplete: boolean;
+  analysisResults?: any;
 }
 
-const AnalysisResults: React.FC<AnalysisResultsProps> = ({ fileName, analysisComplete }) => {
+const AnalysisResults: React.FC<AnalysisResultsProps> = ({ fileName, analysisComplete, analysisResults }) => {
   // Mock data for demonstration
   const mockMetrics = [
     {
@@ -71,7 +72,17 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ fileName, analysisCom
     }
   ];
 
-  const aiInsights = [
+  // Use real analysis results or fallback to mock data
+  const actualMetrics = analysisResults?.keyFindings?.map((finding: any) => ({
+    name: finding.metric,
+    value: finding.value,
+    normalRange: finding.normalRange,
+    status: finding.status,
+    unit: '',
+    explanation: finding.explanation
+  })) || mockMetrics;
+
+  const aiInsights = analysisResults?.recommendations || [
     "Your blood work shows mostly normal values with a few areas for attention.",
     "The low hemoglobin and vitamin D levels suggest you may benefit from dietary changes and supplements.",
     "Your kidney function shows a slight elevation in creatinine - monitor hydration and follow up.",
@@ -121,6 +132,21 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ fileName, analysisCom
         </CardHeader>
       </Card>
 
+      {/* AI Summary */}
+      {analysisResults?.summary && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Brain className="w-5 h-5 text-primary" />
+              <span>AI Summary</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm leading-relaxed">{analysisResults.summary}</p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* AI Insights */}
       <Card>
         <CardHeader>
@@ -143,6 +169,28 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ fileName, analysisCom
         </CardContent>
       </Card>
 
+      {/* Concerns */}
+      {analysisResults?.concerns?.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2 text-warning">
+              <MessageCircle className="w-5 h-5" />
+              <span>Areas of Concern</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {analysisResults.concerns.map((concern: string, index: number) => (
+                <div key={index} className="flex items-start space-x-2 p-3 bg-warning/10 rounded-lg">
+                  <div className="w-2 h-2 bg-warning rounded-full mt-2 flex-shrink-0" />
+                  <p className="text-sm leading-relaxed">{concern}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Results Tabs */}
       <Tabs defaultValue="metrics" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
@@ -157,13 +205,24 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ fileName, analysisCom
         </TabsList>
 
         <TabsContent value="metrics">
-          <HealthMetrics metrics={mockMetrics} />
+          <HealthMetrics metrics={actualMetrics} />
         </TabsContent>
 
         <TabsContent value="charts">
-          <HealthCharts metrics={mockMetrics} />
+          <HealthCharts metrics={actualMetrics} />
         </TabsContent>
       </Tabs>
+
+      {/* Disclaimer */}
+      {analysisResults?.disclaimer && (
+        <Card className="border-muted bg-muted/30">
+          <CardContent className="p-4">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <strong>Disclaimer:</strong> {analysisResults.disclaimer}
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4">
