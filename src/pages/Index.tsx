@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Stethoscope, Brain, Shield, Zap, ArrowRight, FileText, BarChart3, MessageCircle, Download, LogOut, User as UserIcon } from 'lucide-react';
+import { Stethoscope, Brain, Shield, Zap, ArrowRight, FileText, BarChart3, MessageCircle, Download, LogOut, User as UserIcon, Trophy, Activity, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,10 @@ import AuthModal from '@/components/AuthModal';
 import LanguageSelector from '@/components/LanguageSelector';
 import ReportHistory from '@/components/ReportHistory';
 import UserStats from '@/components/UserStats';
+import Chatbot from '@/components/Chatbot';
+import ChallengeSection from '@/components/ChallengeSection';
+import CommentSection from '@/components/CommentSection';
+import LiveDashboard from '@/components/LiveDashboard';
 import heroImage from '@/assets/medclarity-hero.png';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -23,7 +27,7 @@ const Index = () => {
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<any>(null);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
-  const [currentView, setCurrentView] = useState<'upload' | 'history'>('upload');
+  const [currentView, setCurrentView] = useState<'upload' | 'history' | 'challenges' | 'comments' | 'dashboard'>('upload');
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const { toast } = useToast();
 
@@ -293,10 +297,13 @@ const Index = () => {
 
         {/* Main Content */}
         {user ? (
-          <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as 'upload' | 'history')} className="mb-16">
-            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+          <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as typeof currentView)} className="mb-16">
+            <TabsList className="grid w-full grid-cols-5 max-w-4xl mx-auto">
               <TabsTrigger value="upload">Upload Report</TabsTrigger>
               <TabsTrigger value="history">Report History</TabsTrigger>
+              <TabsTrigger value="dashboard">Live Dashboard</TabsTrigger>
+              <TabsTrigger value="challenges">Challenges</TabsTrigger>
+              <TabsTrigger value="comments">Community</TabsTrigger>
             </TabsList>
 
             <TabsContent value="upload" className="mt-8">
@@ -324,6 +331,18 @@ const Index = () => {
 
             <TabsContent value="history" className="mt-8">
               <ReportHistory userId={user.id} onViewReport={handleViewReport} />
+            </TabsContent>
+
+            <TabsContent value="dashboard" className="mt-8">
+              <LiveDashboard />
+            </TabsContent>
+
+            <TabsContent value="challenges" className="mt-8">
+              <ChallengeSection userId={user.id} />
+            </TabsContent>
+
+            <TabsContent value="comments" className="mt-8">
+              <CommentSection userId={user.id} />
             </TabsContent>
           </Tabs>
         ) : (
@@ -433,6 +452,9 @@ const Index = () => {
             </div>
           </Card>
         </section>
+
+        {/* Chatbot Component */}
+        {user && <Chatbot />}
 
         {/* CTA Section */}
         <section className="text-center">
