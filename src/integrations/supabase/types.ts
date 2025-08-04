@@ -14,30 +14,178 @@ export type Database = {
   }
   public: {
     Tables: {
+      challenge_participants: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          points_earned: number
+          progress: number
+          status: string
+          updated_at: string
+          user_id: string
+          video_proof_url: string | null
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          points_earned?: number
+          progress?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+          video_proof_url?: string | null
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          points_earned?: number
+          progress?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+          video_proof_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          created_at: string
+          description: string
+          duration_days: number
+          id: string
+          is_active: boolean
+          points: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          duration_days?: number
+          id?: string
+          is_active?: boolean
+          points?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          duration_days?: number
+          id?: string
+          is_active?: boolean
+          points?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_dashboard: {
+        Row: {
+          active_users: number
+          id: string
+          last_updated: string
+          processing_reports: number
+          reports_today: number
+          total_reports: number
+        }
+        Insert: {
+          active_users?: number
+          id?: string
+          last_updated?: string
+          processing_reports?: number
+          reports_today?: number
+          total_reports?: number
+        }
+        Update: {
+          active_users?: number
+          id?: string
+          last_updated?: string
+          processing_reports?: number
+          reports_today?: number
+          total_reports?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           display_name: string | null
           id: string
           preferred_language: string | null
+          real_name: string | null
           updated_at: string
           user_id: string
+          username: string | null
         }
         Insert: {
           created_at?: string
           display_name?: string | null
           id?: string
           preferred_language?: string | null
+          real_name?: string | null
           updated_at?: string
           user_id: string
+          username?: string | null
         }
         Update: {
           created_at?: string
           display_name?: string | null
           id?: string
           preferred_language?: string | null
+          real_name?: string | null
           updated_at?: string
           user_id?: string
+          username?: string | null
         }
         Relationships: []
       }
