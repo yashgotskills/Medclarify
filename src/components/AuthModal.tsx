@@ -20,10 +20,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [username, setUsername] = useState('');
   const { toast } = useToast();
 
   const handleSignUp = async () => {
-    if (!email || !password || !displayName) {
+    if (!email || !password || !displayName || !username) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -41,6 +42,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             display_name: displayName,
+            username: username,
           }
         }
       });
@@ -106,6 +108,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
     setEmail('');
     setPassword('');
     setDisplayName('');
+    setUsername('');
     setIsLoading(false);
   };
 
@@ -193,6 +196,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Enter your full name"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Choose a username for leaderboard"
                     disabled={isLoading}
                   />
                 </div>

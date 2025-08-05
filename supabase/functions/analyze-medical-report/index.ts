@@ -14,7 +14,15 @@ serve(async (req) => {
   }
 
   try {
-    const { text, language = 'en' } = await req.json();
+    const { text, language = 'en', isChat = false } = await req.json();
+
+    // If this is a chat request, redirect to gemini-chat function
+    if (isChat) {
+      return new Response(
+        JSON.stringify({ error: 'Please use gemini-chat function for chat messages' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     if (!text) {
       return new Response(

@@ -52,11 +52,10 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-medical-report', {
+      const { data, error } = await supabase.functions.invoke('gemini-chat', {
         body: {
-          text: inputMessage,
-          language: 'en',
-          isChat: true
+          message: inputMessage,
+          conversationHistory: messages.slice(-5) // Send last 5 messages for context
         }
       });
 
