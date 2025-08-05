@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, User, Mail, Lock, UserPlus, LogIn } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { validateEmail, formatValidationErrors } from '@/utils/emailValidation';
 
 interface AuthModalProps {
   children: React.ReactNode;
@@ -23,11 +24,55 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
   const [username, setUsername] = useState('');
   const { toast } = useToast();
 
+  const validateEmailInput = async (email: string, action: 'signup' | 'signin' = 'signup') => {
+    // Client-side validation first
+    const clientValidation = validateEmail(email);
+    if (!clientValidation.isValid) {
+      return {
+        isValid: false,
+        message: formatValidationErrors(clientValidation)
+      };
+    }
+
+    // Server-side validation for additional security
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-email', {
+        body: { email, action }
+      });
+
+      if (error) throw error;
+
+      return {
+        isValid: data.isValid,
+        message: data.isValid ? 'Email is valid' : (data.error || 'Email validation failed'),
+        riskScore: data.riskScore
+      };
+    } catch (error: any) {
+      console.error('Email validation error:', error);
+      // Fall back to client-side validation if server fails
+      return {
+        isValid: clientValidation.isValid,
+        message: formatValidationErrors(clientValidation)
+      };
+    }
+  };
+
   const handleSignUp = async () => {
     if (!email || !password || !displayName || !username) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate email before proceeding
+    const emailValidation = await validateEmailInput(email, 'signup');
+    if (!emailValidation.isValid) {
+      toast({
+        title: "Invalid Email",
+        description: emailValidation.message,
         variant: "destructive",
       });
       return;
@@ -72,6 +117,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
       toast({
         title: "Error",
         description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Basic email validation for signin
+    const emailValidation = await validateEmailInput(email, 'signin');
+    if (!emailValidation.isValid && emailValidation.riskScore >= 90) {
+      toast({
+        title: "Invalid Email",
+        description: emailValidation.message,
         variant: "destructive",
       });
       return;
@@ -152,6 +208,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     disabled={isLoading}
+                    onBlur={async (e) => {
+                      const emailValue = e.target.value;
+                      if (emailValue) {
+                        const validation = validateEmail(emailValue);
+                        if (!validation.isValid) {
+                          toast({
+                            title: "Email Warning",
+                            description: formatValidationErrors(validation),
+                            variant: "destructive",
+                          });
+                        }
+                      }
+                    }}
                   />
                 </div>
                 
@@ -227,6 +296,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ children, onSuccess }) => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     disabled={isLoading}
+                    onBlur={async (e) => {
+                      const emailValue = e.target.value;
+                      if (emailValue) {
+                        const validation = validateEmail(emailValue);
+                        if (!validation.isValid) {
+                          toast({
+                            title: "Email Warning",
+                            description: formatValidationErrors(validation),
+                            variant: "destructive",
+                          });
+                        }
+                      }
+                    }}
                   />
                 </div>
                 
