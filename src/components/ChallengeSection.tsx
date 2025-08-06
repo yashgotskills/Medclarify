@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Calendar, Users, Play, Upload, Star } from 'lucide-react';
+import { Trophy, Calendar, Users, Play, Upload, Star, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,8 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { VideoUpload } from './VideoUpload';
+import { ChallengeReminder } from './ChallengeReminder';
 
 interface Challenge {
   id: string;
@@ -42,6 +44,7 @@ const ChallengeSection: React.FC<ChallengeSectionProps> = ({ userId }) => {
   const [participants, setParticipants] = useState<ChallengeParticipant[]>([]);
   const [userParticipations, setUserParticipations] = useState<ChallengeParticipant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showVideoUpload, setShowVideoUpload] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -195,8 +198,44 @@ const ChallengeSection: React.FC<ChallengeSectionProps> = ({ userId }) => {
     return userParticipations.find(p => p.challenge_id === challengeId);
   };
 
+  const handleVideoVerified = async (challengeId: string, videoUrl: string, verificationData: any) => {
+    try {
+      const participation = getUserParticipation(challengeId);
+      if (participation) {
+        const newProgress = Math.min(participation.progress + 10, 100);
+        await updateProgress(participation.id, newProgress);
+        
+        // Update video proof URL
+        const { error } = await supabase
+          .from('challenge_participants')
+          .update({ 
+            video_proof_url: videoUrl,
+            points_earned: participation.points_earned + 100
+          })
+          .eq('id', participation.id);
+
+        if (error) throw error;
+        
+        setShowVideoUpload(null);
+        toast({
+          title: 'Success',
+          description: 'Challenge progress updated with video proof!',
+        });
+      }
+    } catch (error) {
+      console.error('Error updating challenge with video:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update challenge progress',
+        variant: 'destructive'
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <ChallengeReminder userId={userId} />
+      
       <div className="text-center">
         <h2 className="text-3xl font-bold mb-4">Health Challenges</h2>
         <p className="text-muted-foreground">
@@ -251,16 +290,16 @@ const ChallengeSection: React.FC<ChallengeSectionProps> = ({ userId }) => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateProgress(userParticipation.id, Math.min(100, userParticipation.progress + 10))}
+                            onClick={() => setShowVideoUpload(challenge.id)}
                           >
-                            +10%
+                            <Camera className="h-4 w-4 mr-1" />
+                            Video Proof
                           </Button>
                           <Button
                             size="sm"
-                            variant="outline"
-                            onClick={() => updateProgress(userParticipation.id, 100)}
+                            onClick={() => updateProgress(userParticipation.id, Math.min(100, userParticipation.progress + 10))}
                           >
-                            Complete
+                            +10%
                           </Button>
                         </div>
                       </div>
@@ -413,6 +452,28 @@ const ChallengeSection: React.FC<ChallengeSectionProps> = ({ userId }) => {
           </div>
         </TabsContent>
       </Tabs>
+      
+      {showVideoUpload && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg p-6 max-w-md w-full">
+            <VideoUpload
+              challengeId={showVideoUpload}
+              challengeTitle={challenges.find(c => c.id === showVideoUpload)?.title || ''}
+              challengeDescription={challenges.find(c => c.id === showVideoUpload)?.description || ''}
+              onVideoVerified={(videoUrl, verificationData) => 
+                handleVideoVerified(showVideoUpload, videoUrl, verificationData)
+              }
+            />
+            <Button
+              variant="outline"
+              onClick={() => setShowVideoUpload(null)}
+              className="w-full mt-4"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
