@@ -100,8 +100,8 @@ const Chatbot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-xl z-50 flex flex-col">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="fixed bottom-6 right-6 w-96 h-[600px] shadow-xl z-50 flex flex-col">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b">
             <CardTitle className="text-lg flex items-center gap-2">
               <Bot className="h-5 w-5 text-primary" />
               AI Medical Assistant
@@ -116,52 +116,56 @@ const Chatbot = () => {
             </Button>
           </CardHeader>
           
-          <CardContent className="flex-1 flex flex-col p-0">
-            <ScrollArea className="flex-1 p-4">
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
+          <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+            {/* Messages Area with Fixed Height and Scroll */}
+            <div className="flex-1 overflow-hidden">
+              <ScrollArea className="h-full">
+                <div className="p-4 space-y-4">
+                  {messages.map((message) => (
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted'
-                      }`}
+                      key={message.id}
+                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className="flex items-start gap-2">
-                        {message.role === 'assistant' && (
-                          <Bot className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                        )}
-                        {message.role === 'user' && (
-                          <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                        )}
-                        <div className="text-sm">{message.content}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-muted rounded-lg p-3 max-w-[80%]">
-                      <div className="flex items-center gap-2">
-                        <Bot className="h-4 w-4" />
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div
+                        className={`max-w-[85%] rounded-lg p-3 ${
+                          message.role === 'user'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          {message.role === 'assistant' && (
+                            <Bot className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                          )}
+                          {message.role === 'user' && (
+                            <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                          )}
+                          <div className="text-sm whitespace-pre-wrap break-words">{message.content}</div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-              <div ref={messagesEndRef} />
-            </ScrollArea>
+                  ))}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-muted rounded-lg p-3 max-w-[85%]">
+                        <div className="flex items-center gap-2">
+                          <Bot className="h-4 w-4" />
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
+            </div>
             
-            <div className="p-4 border-t">
+            {/* Input Area - Always Visible at Bottom */}
+            <div className="flex-shrink-0 p-4 border-t bg-background">
               <div className="flex gap-2">
                 <Input
                   value={inputMessage}
