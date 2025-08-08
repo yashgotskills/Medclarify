@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Stethoscope, Brain, Shield, Zap, ArrowRight, FileText, BarChart3, MessageCircle, Download, LogOut, User as UserIcon, Trophy, Activity, Users } from 'lucide-react';
+import { Zap, ArrowRight, FileText, BarChart3, MessageCircle, LogOut, User as UserIcon, Trophy, Activity, Users, Bot, Sparkles, Rocket, Globe, Brain, Shield, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,11 +10,11 @@ import AuthModal from '@/components/AuthModal';
 import LanguageSelector from '@/components/LanguageSelector';
 import ReportHistory from '@/components/ReportHistory';
 import UserStats from '@/components/UserStats';
-import Chatbot from '@/components/Chatbot';
+import VoiceAI from '@/components/VoiceAI';
 import ChallengeSection from '@/components/ChallengeSection';
 import CommentSection from '@/components/CommentSection';
 import LiveDashboard from '@/components/LiveDashboard';
-import heroImage from '@/assets/medclarity-hero.png';
+import heroImage from '@/assets/futuristic-hero.jpg';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import type { User, Session } from '@supabase/supabase-js';
@@ -162,47 +162,49 @@ const Index = () => {
 
   const features = [
     {
-      icon: <FileText className="w-6 h-6" />,
-      title: "Smart Upload",
-      description: "PDF, images, or text - our AI reads all formats instantly"
+      icon: <Bot className="w-6 h-6" />,
+      title: "Voice AI Assistant",
+      description: "Talk naturally with AI - voice-enabled conversations about anything"
     },
     {
       icon: <Brain className="w-6 h-6" />,
-      title: "AI Analysis",
-      description: "Advanced medical NLP breaks down complex reports into simple insights"
+      title: "Smart Analytics",
+      description: "Advanced AI processes and analyzes your data intelligently"
     },
     {
-      icon: <BarChart3 className="w-6 h-6" />,
-      title: "Visual Dashboard",
-      description: "Beautiful charts show your health metrics at a glance"
+      icon: <Sparkles className="w-6 h-6" />,
+      title: "Real-time Insights",
+      description: "Get instant AI-powered insights and recommendations"
     },
     {
-      icon: <MessageCircle className="w-6 h-6" />,
-      title: "Ask Questions",
-      description: "Chat with AI about your results and get personalized advice"
+      icon: <Globe className="w-6 h-6" />,
+      title: "Universal Platform",
+      description: "One platform for all your AI-powered productivity needs"
     }
   ];
 
   const benefits = [
-    "Understand your health reports in plain English",
-    "Get instant insights without waiting for doctor visits", 
-    "Track your health trends over time",
-    "Download simplified reports to share with family"
+    "Voice-enabled AI conversations for natural interactions",
+    "Multi-modal AI processing for documents, images, and voice", 
+    "Real-time analytics and intelligent insights",
+    "Seamless workflow automation with AI assistance"
   ];
 
   if (user && (analysisStarted || selectedReport)) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-accent/20 to-background">
+      <div className="min-h-screen bg-gradient-bg">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <Stethoscope className="w-8 h-8 text-primary" />
-                <h1 className="text-2xl font-bold text-primary">MedClarity</h1>
+                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-neon">
+                  <Bot className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">NexusAI</h1>
               </div>
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                AI-Powered Medical Report Analysis
+              <Badge variant="outline" className="bg-primary/20 text-primary border-primary/40 shadow-card">
+                Next-Gen AI Platform
               </Badge>
             </div>
             
@@ -216,10 +218,11 @@ const Index = () => {
                   setSelectedReport(null);
                   setCurrentView('upload');
                 }}
+                className="border-primary/40 text-primary hover:bg-primary/10"
               >
                 New Analysis
               </Button>
-              <Button variant="ghost" onClick={handleSignOut}>
+              <Button variant="ghost" onClick={handleSignOut} className="hover:bg-primary/10">
                 <LogOut className="w-4 h-4 mr-2" />
                 Sign Out
               </Button>
@@ -237,30 +240,35 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-accent/20 to-background">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-bg relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-gradient-glow opacity-30 pointer-events-none"></div>
+      <div className="absolute top-20 left-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-float"></div>
+      <div className="absolute bottom-20 right-20 w-64 h-64 bg-secondary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+      
+      <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Header */}
         <header className="text-center mb-16">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Stethoscope className="w-7 h-7 text-primary" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-neon animate-glow-pulse">
+                <Bot className="w-8 h-8 text-primary-foreground" />
               </div>
-              <h1 className="text-3xl font-bold text-primary">MedClarity</h1>
+              <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">NexusAI</h1>
             </div>
             
             <div className="flex items-center space-x-4">
               <LanguageSelector value={selectedLanguage} onValueChange={setSelectedLanguage} />
               {user ? (
                 <div className="flex items-center space-x-2">
-                  <Button variant="ghost" onClick={handleSignOut}>
+                  <Button variant="ghost" onClick={handleSignOut} className="hover:bg-primary/10">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </Button>
                 </div>
               ) : (
                 <AuthModal>
-                  <Button variant="outline">
+                  <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary/10">
                     <UserIcon className="w-4 h-4 mr-2" />
                     Sign In
                   </Button>
@@ -269,23 +277,35 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="max-w-3xl mx-auto space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-              Understand Your
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Medical Reports </span>
-              Instantly
+          <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+            <h2 className="text-5xl md:text-7xl font-bold leading-tight">
+              Next-Level
+              <span className="bg-gradient-primary bg-clip-text text-transparent"> AI Platform </span>
+              for Everything
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Upload any medical report and get AI-powered insights in simple, human-readable language. 
-              No more confusion about your health metrics.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Experience the future of AI interaction. Voice-enabled conversations, intelligent document processing, 
+              and seamless workflow automation - all in one powerful platform.
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-2 mt-6">
-            <Badge variant="secondary" className="text-sm">✨ AI-Powered</Badge>
-            <Badge variant="secondary" className="text-sm">🔒 Secure & Private</Badge>
-            <Badge variant="secondary" className="text-sm">📱 Mobile Friendly</Badge>
-            <Badge variant="secondary" className="text-sm">⚡ Instant Results</Badge>
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
+            <Badge variant="secondary" className="text-sm bg-primary/20 text-primary border-primary/40 shadow-card animate-fade-in">
+              <Bot className="w-3 h-3 mr-1" />
+              Voice AI
+            </Badge>
+            <Badge variant="secondary" className="text-sm bg-secondary/20 text-secondary border-secondary/40 shadow-card animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <Brain className="w-3 h-3 mr-1" />
+              Smart Processing
+            </Badge>
+            <Badge variant="secondary" className="text-sm bg-accent/20 text-accent border-accent/40 shadow-card animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <Shield className="w-3 h-3 mr-1" />
+              Secure & Private
+            </Badge>
+            <Badge variant="secondary" className="text-sm bg-warning/20 text-warning border-warning/40 shadow-card animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <Zap className="w-3 h-3 mr-1" />
+              Lightning Fast
+            </Badge>
           </div>
         </header>
 
@@ -298,31 +318,45 @@ const Index = () => {
         {/* Main Content */}
         {user ? (
           <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as typeof currentView)} className="mb-16">
-            <TabsList className="grid w-full grid-cols-5 max-w-4xl mx-auto">
-              <TabsTrigger value="upload">Upload Report</TabsTrigger>
-              <TabsTrigger value="history">Report History</TabsTrigger>
-              <TabsTrigger value="dashboard">Live Dashboard</TabsTrigger>
-              <TabsTrigger value="challenges">Challenges</TabsTrigger>
-              <TabsTrigger value="comments">Community</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-5 max-w-5xl mx-auto bg-card/50 backdrop-blur-sm border border-primary/20 shadow-card">
+              <TabsTrigger value="upload" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">AI Processing</TabsTrigger>
+              <TabsTrigger value="history" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">History</TabsTrigger>
+              <TabsTrigger value="dashboard" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Dashboard</TabsTrigger>
+              <TabsTrigger value="challenges" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Challenges</TabsTrigger>
+              <TabsTrigger value="comments" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Community</TabsTrigger>
             </TabsList>
 
             <TabsContent value="upload" className="mt-8">
               <section>
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
                   <div className="order-2 lg:order-1">
-                    <img 
-                      src={heroImage} 
-                      alt="Medical analysis dashboard" 
-                      className="w-full h-auto rounded-2xl shadow-2xl"
-                    />
+                    <div className="relative">
+                      <img 
+                        src={heroImage} 
+                        alt="Futuristic AI interface" 
+                        className="w-full h-auto rounded-3xl shadow-elevated border border-primary/20"
+                      />
+                      <div className="absolute inset-0 bg-gradient-primary/20 rounded-3xl"></div>
+                    </div>
                   </div>
                   
                   <div className="order-1 lg:order-2 space-y-6">
-                    <FileUpload onFileUpload={handleFileUpload} userId={user.id} />
+                    <Card className="p-8 bg-gradient-card border border-primary/20 shadow-elevated">
+                      <CardContent className="space-y-6">
+                        <div className="text-center">
+                          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-4 shadow-neon animate-glow-pulse">
+                            <Rocket className="w-8 h-8 text-primary-foreground" />
+                          </div>
+                          <h3 className="text-2xl font-bold mb-2">AI-Powered Processing</h3>
+                          <p className="text-muted-foreground">Upload any document for intelligent analysis</p>
+                        </div>
+                        <FileUpload onFileUpload={handleFileUpload} userId={user.id} />
+                      </CardContent>
+                    </Card>
                     
                     <div className="text-center text-sm text-muted-foreground">
-                      <Shield className="w-4 h-4 inline mr-1" />
-                      Your reports are processed securely with end-to-end encryption
+                      <Shield className="w-4 h-4 inline mr-1 text-accent" />
+                      Your data is processed securely with enterprise-grade encryption
                     </div>
                   </div>
                 </div>
@@ -349,32 +383,38 @@ const Index = () => {
           <section className="mb-16">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="order-2 lg:order-1">
-                <img 
-                  src={heroImage} 
-                  alt="Medical analysis dashboard" 
-                  className="w-full h-auto rounded-2xl shadow-2xl"
-                />
+                <div className="relative">
+                  <img 
+                    src={heroImage} 
+                    alt="Futuristic AI interface" 
+                    className="w-full h-auto rounded-3xl shadow-elevated border border-primary/20"
+                  />
+                  <div className="absolute inset-0 bg-gradient-primary/20 rounded-3xl"></div>
+                </div>
               </div>
               
               <div className="order-1 lg:order-2 space-y-6">
-                <Card className="p-8 text-center">
-                  <CardContent className="space-y-4">
-                    <h3 className="text-xl font-semibold">Sign In Required</h3>
+                <Card className="p-8 text-center bg-gradient-card border border-primary/20 shadow-elevated">
+                  <CardContent className="space-y-6">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto shadow-neon animate-glow-pulse">
+                      <UserIcon className="w-8 h-8 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-2xl font-bold">Join the Future</h3>
                     <p className="text-muted-foreground">
-                      Please sign in to upload and analyze your medical reports
+                      Sign in to access next-generation AI capabilities
                     </p>
                     <AuthModal>
-                      <Button size="lg" className="w-full">
+                      <Button size="lg" className="w-full bg-gradient-primary border-0 shadow-neon hover:shadow-elevated transition-all duration-300">
                         <UserIcon className="w-4 h-4 mr-2" />
-                        Sign In to Continue
+                        Enter NexusAI
                       </Button>
                     </AuthModal>
                   </CardContent>
                 </Card>
                 
                 <div className="text-center text-sm text-muted-foreground">
-                  <Shield className="w-4 h-4 inline mr-1" />
-                  Your reports are processed securely with end-to-end encryption
+                  <Shield className="w-4 h-4 inline mr-1 text-accent" />
+                  Your data is processed securely with enterprise-grade encryption
                 </div>
               </div>
             </div>
@@ -383,21 +423,21 @@ const Index = () => {
 
         {/* Features */}
         <section className="mb-16">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">How MedClarity Works</h3>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Our advanced AI transforms complex medical jargon into clear, actionable insights
+          <div className="text-center mb-12 animate-fade-in">
+            <h3 className="text-4xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">Revolutionary AI Features</h3>
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto leading-relaxed">
+              Experience cutting-edge AI capabilities that transform how you work, communicate, and process information
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
-              <Card key={index} className="text-center p-6 hover:shadow-lg transition-all duration-200 border-0 bg-white/60 backdrop-blur-sm">
+              <Card key={index} className="text-center p-6 hover:shadow-elevated transition-all duration-300 border border-primary/20 bg-gradient-card shadow-card group animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <CardContent className="pt-6">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <div className="text-primary">{feature.icon}</div>
+                  <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-neon group-hover:animate-glow-pulse transition-all duration-300">
+                    <div className="text-primary-foreground">{feature.icon}</div>
                   </div>
-                  <h4 className="font-semibold mb-2">{feature.title}</h4>
+                  <h4 className="font-semibold mb-3 text-lg">{feature.title}</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
@@ -409,40 +449,48 @@ const Index = () => {
 
         {/* Benefits */}
         <section className="mb-16">
-          <Card className="p-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-0">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
+          <Card className="p-8 bg-gradient-card border border-primary/20 shadow-elevated relative overflow-hidden animate-fade-in">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-primary/20 rounded-full blur-3xl"></div>
+            <div className="grid lg:grid-cols-2 gap-8 items-center relative z-10">
               <div>
-                <h3 className="text-2xl font-bold mb-6">Why Choose MedClarity?</h3>
+                <h3 className="text-3xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">Why Choose NexusAI?</h3>
                 <div className="space-y-4">
                   {benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <div className="w-6 h-6 bg-success/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <div className="w-2 h-2 bg-success rounded-full" />
+                    <div key={index} className="flex items-start space-x-3 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <div className="w-6 h-6 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-neon">
+                        <div className="w-2 h-2 bg-primary-foreground rounded-full" />
                       </div>
-                      <span className="text-sm leading-relaxed">{benefit}</span>
+                      <span className="leading-relaxed">{benefit}</span>
                     </div>
                   ))}
                 </div>
               </div>
               
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                    <Zap className="w-8 h-8 text-primary" />
+              <div className="bg-gradient-card border border-primary/20 rounded-2xl p-8 shadow-card">
+                <div className="text-center space-y-6">
+                  <div className="w-20 h-20 bg-gradient-primary rounded-3xl flex items-center justify-center mx-auto shadow-neon animate-glow-pulse">
+                    <Rocket className="w-10 h-10 text-primary-foreground" />
                   </div>
-                  <h4 className="font-semibold text-lg">Get Started in Seconds</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Simply upload your report and let our AI do the rest
+                  <h4 className="font-semibold text-xl">Launch Into the Future</h4>
+                  <p className="text-muted-foreground">
+                    Experience next-generation AI capabilities in seconds
                   </p>
                   {user ? (
-                    <Button variant="upload" size="lg" className="w-full" onClick={() => setCurrentView('upload')}>
-                      Upload Your First Report
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-gradient-primary border-0 shadow-neon hover:shadow-elevated transition-all duration-300" 
+                      onClick={() => setCurrentView('upload')}
+                    >
+                      Start Your AI Journey
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   ) : (
                     <AuthModal>
-                      <Button variant="upload" size="lg" className="w-full">
-                        Get Started Now
+                      <Button 
+                        size="lg" 
+                        className="w-full bg-gradient-primary border-0 shadow-neon hover:shadow-elevated transition-all duration-300"
+                      >
+                        Enter the Future
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </AuthModal>
@@ -453,8 +501,7 @@ const Index = () => {
           </Card>
         </section>
 
-        {/* Chatbot Component */}
-        {user && <Chatbot />}
+        <VoiceAI />
 
         {/* CTA Section */}
         <section className="text-center">
